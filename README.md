@@ -62,15 +62,15 @@ module "vpc" {
 
 	subnet_public = [
     	{
-			tag_name				= "vpc-pub-1a"
-			cidr_block 				= "10.0.0.0/19"
-			availability_zone 		= "us-east-1a"
+			tag_name            = "vpc-pub-1a"
+			cidr_block 	        = "10.0.0.0/19"
+			availability_zone 	= "us-east-1a"
 			map_public_ip_on_launch	= "true"
     	},
     	{
-			tag_name				= "vpc-pub-1b"
-			cidr_block 				= "10.0.64.0/18"
-			availability_zone 		= "us-east-1b"
+			tag_name			= "vpc-pub-1b"
+			cidr_block 			= "10.0.64.0/18"
+			availability_zone 	= "us-east-1b"
 			map_public_ip_on_launch	= "true"
     	}
 	]
