@@ -22,7 +22,7 @@ resource "aws_vpc" "main" {
         var.default_tags
     )
 }
-
+## DHCP
 resource "aws_vpc_dhcp_options" "dhcp_opts" {
     count   = var.create ? length(var.dhcp_opts) : 0
 
@@ -240,6 +240,74 @@ resource "aws_db_subnet_group" "database" {
         },
         var.default_tags
     )
+}
+# Elasticache
+resource "aws_subnet" "cache" {
+    depends_on = [ aws_vpc.main ]
+
+    count   = var.create ? length(var.subnet_cache) : 0
+
+    vpc_id      = data.aws_vpc.selected.id
+
+    cidr_block              = lookup(var.subnet_cache[count.index], "cidr_block", null)
+    availability_zone       = lookup(var.subnet_cache[count.index], "availability_zone", null)
+    map_public_ip_on_launch = lookup(var.subnet_cache[count.index], "map_public_ip_on_launch", null)
+    tags = merge(
+        {
+            Name = lookup(var.subnet_cache[count.index], "tag_name", null)
+        },
+        var.default_tags
+    )
+}
+resource "aws_eip" "cache" {
+    count   = var.create ? length(var.subnet_cache) : 0 
+
+    vpc = true
+    tags    = merge(
+        {
+            "Name" = "${var.vpc_name}-ElastiCache-ElasticIP"
+        },
+        var.default_tags
+    )
+}
+resource "aws_nat_gateway" "cache" {
+    count   = var.create ? length(var.subnet_cache) : 0   
+
+    allocation_id = element(aws_eip.cache.*.id, count.index)
+    subnet_id     = element(aws_subnet.cache.*.id, count.index)
+    tags = merge(
+        {
+            Name = "${var.vpc_name}-ElastiCache-NATGateway"
+        },
+        var.default_tags
+    )
+}
+resource "aws_route_table" "cache" {
+    count   = var.create ? length(var.subnet_cache) : 0
+
+    vpc_id     = data.aws_vpc.selected.id
+    route {
+        cidr_block = "0.0.0.0/0"
+        nat_gateway_id = element(aws_nat_gateway.cache.*.id, count.index)
+    }
+    tags = merge(
+        {
+            "Name" = format("%s", "${var.vpc_name}-RouteTable-ElastiCache-Private")
+        },
+        var.default_tags
+    )
+}
+resource "aws_route_table_association" "cache" {
+    count   = var.create ? length(var.subnet_cache) : 0
+
+    route_table_id = element(aws_route_table.cache.*.id, count.index)
+    subnet_id = element(aws_subnet.cache.*.id, count.index)
+}
+resource "aws_elasticache_subnet_group" "cache" {
+    count   = var.create && length(var.subnet_cache) > 0 ? 1 : 0
+
+    name        = "${var.vpc_name}-Cache-Subnet-Group" 
+    subnet_ids  = tolist(aws_subnet.cache.*.id)
 }
 
 ## NACL
