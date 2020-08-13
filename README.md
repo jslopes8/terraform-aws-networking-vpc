@@ -1,8 +1,6 @@
 # AWS VPC Terraform module
 
-Terraform module irá criar recursos VPC em AWS.
-
-![VPC Arquitetura](img/vpc.png)
+Terraform module irá provisionar os seguintes recursos:
 
 O codigo irá prover os seguintes recursos na AWS.
 * [VPC](https://www.terraform.io/docs/providers/aws/r/vpc.html)
@@ -19,81 +17,80 @@ O codigo irá prover os seguintes recursos na AWS.
 * [Default Network ACL](https://www.terraform.io/docs/providers/aws/r/default_network_acl.html)
 * [Elastic IP](https://www.terraform.io/docs/providers/aws/r/eip.html)
 
+Existem muitas ferramentas disponiveis para auxiliar-lo a calcular blocos CIDR da sua subnet, eu estou utilizando, por exemoplo, http://www.davidc.net/sites/default/subnets/subnets.html.
 
-## Terraform Remote State
-O block terraform no arquivo main.tf, diz para aonde o terraform deve armazenar o estado definido da sua infra. 
-Isso ajuda trabalhar com o Terraform em equipe, assim cada devops deve ter o estado mais recente da infraestrutura.
-
-O backend remoto utilizado aqui foi S3 Bucket.
-
-Obs: O bucket deve está previamente criado.
-```hcl
-terraform {
-    backend "s3" {
-        profile = "terraform-user"
-        bucket = "bucket-terraform-remote-state-lab"
-        key    = "developer/terraform.tfstate"
-        region = "sa-east-1"
-        skip_requesting_account_id = true
-        skip_credentials_validation = true
-        skip_get_ec2_platforms = true
-        skip_metadata_api_check = true
-    }
-}
-```
 
 ## Usage
-
+Exemplo de uso: Criando uma VPC básica.
 ```hcl
-module "create_vpc" {
-    source = "../../../modules/networking/vpc/"
+module "vpc" {
+  	source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.0"
 
-    vpc_name    = "TF-Lab"
-    cidr_block  = "10.100.0.0/18"
-    region      = "sa-east-1"
-    avail_zones = [ "sa-east-1a", "sa-east-1c" ]
-
-    assign_generated_ipv6_cidr_block = "false"
-
-    enable_dns_hostnames    = "true"
-    enable_dns_support      = "true"
-
-    instance_tenancy        = "default"
-
-    # VPC Flow Logs
-    traffic_type        = "ALL"
-    retention_in_days   = "3"
-
-    # VPC DHCP Options Set
-    domain_name_servers = "AmazonProvidedDNS"
-
-    # VPC Default Network ACL, Default is true
-    # create_network_acl    = "false"
-
-    # VPC Default Secuity Group, Default is true
-    # create_sg-default = "false"
-
-
-    # VPC Subnets
-    # Specify true to indicate that instances launched into
-    # the subnet should be assigned a public IP address. Default is false.
-    map_public_ip_on_launch         = "false"
-    map_public_ip_on_launch_sn_pub  = "true"
-
-    # Working with a DB Instance in a VPC, Default is true.
-    # create-db-subnet-group  = "false"
-
-    default_tags = {
-        ApplicationRole = "VPC-Lab"
-        Environment     = "Lab"
-        Customer        = "jslopes"
-        Owner           = "jslopes"
-    }
+  	vpc_name    = "vpc-test"
+	region 		= "us-east-1"
+  	cidr_block  = "10.0.0.0/16"
+	
 }
 ```
+Exemplo de uso: Criando uma VPC com uma subnet publica.
+```hcl
+module "vpc" {
+  	source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.0"
 
-## External NAT Gateway IPs
-Por padrão, este módulo provisionará novos Elastic IPs para os NAT gateways da VPC. 
-Isso significa que, ao criar uma nova VPC, novos IPs são alocados e, quando essa VPC é destruída, esses IPs são liberados.
+  	vpc_name    = "vpc-test"
+	region 		= "us-east-1"
+  	cidr_block  = "10.0.0.0/16"
 
+	subnet_public = [
+    	{
+			tag_name				= "vpc-pub-1a"
+			cidr_block 				= "10.0.0.0/19"
+			availability_zone 		= "us-east-1a"
+			map_public_ip_on_launch	= "true"
+    	}
+	]
+}
+```
+Exemplo de uso: Criando uma VPC com subnet em duas AZs.
+```hcl
+module "vpc" {
+  	source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.0"
 
+  	vpc_name    = "vpc-test"
+	region 		= "us-east-1"
+  	cidr_block  = "10.0.0.0/16"
+
+	subnet_public = [
+    	{
+			tag_name				= "vpc-pub-1a"
+			cidr_block 				= "10.0.0.0/19"
+			availability_zone 		= "us-east-1a"
+			map_public_ip_on_launch	= "true"
+    	},
+    	{
+			tag_name				= "vpc-pub-1b"
+			cidr_block 				= "10.0.64.0/18"
+			availability_zone 		= "us-east-1b"
+			map_public_ip_on_launch	= "true"
+    	}
+	]
+}
+```
+## Requirements
+| Name | Version |
+| ---- | ------- |
+| aws | ~> 3.1 |
+| terraform | ~> 0.12 |
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Variables Inputs
+| Name | Description | Required | Type | Default |
+| ---- | ----------- | -------- | ---- | ------- |
+| vpc_name | O nome da sua VPC | `yes` | `string` | ` ` |
+| region | Escolha qual região está criando a sua VPC | `no` | `string` | `us-east-1` |
+
+## Variable Outputs
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+| Name | Description |
+| ---- | ----------- |
+| vpc | O ID da VPC criada |
