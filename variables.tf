@@ -65,3 +65,8 @@ variable "subnet_database" {
     type = any 
     default = []
 }
+variable "subnet_cache" {
+    type = any
+    default = []
+}
+
