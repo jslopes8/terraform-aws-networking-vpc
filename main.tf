@@ -59,7 +59,7 @@ resource "aws_subnet" "public" {
             Name = lookup(var.subnet_public[count.index], "tag_name", null)
         },
         var.default_tags,
-        var.tags_public
+        var.tag_public
     )
 }
 
