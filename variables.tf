@@ -45,6 +45,10 @@ variable "subnet_public" {
     type    = any 
     default = []
 }
+variable "tag_public" {
+    type = map(string)
+    default = {}
+}
 variable "enable_nat_gateway" {
     type = bool  
     default = false
