@@ -49,6 +49,10 @@ variable "tag_public" {
     type = map(string)
     default = {}
 }
+variable "tag_private" {
+    type = map(string)
+    default = {}
+}
 variable "enable_nat_gateway" {
     type = bool  
     default = false

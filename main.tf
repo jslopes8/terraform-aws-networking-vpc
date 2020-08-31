@@ -141,7 +141,8 @@ resource "aws_subnet" "private" {
         {
             Name = lookup(var.subnet_private[count.index], "tag_name", null)
         },
-        var.default_tags
+        var.default_tags,
+        var.tag_private
     )
 }
 
