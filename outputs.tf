@@ -29,5 +29,5 @@ output "subnet_db" {
     value = length(aws_db_subnet_group.database) > 1 ? aws_db_subnet_group.database.*.id : null
 } 
 output "vpc_peering_id" {
-    value = length(aws_vpc_peering_connection.main) > 1 ? aws_vpc_peering_connection.main.0.id : null
+    value = length(aws_vpc_peering_connection.main) > 1 ? aws_vpc_peering_connection.main.0.id : 0
 }
