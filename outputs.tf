@@ -4,6 +4,12 @@ output "id" {
 output "subnet_private" {
     value = length(aws_subnet.private) > 1 ? aws_subnet.private.*.cidr_block : null
 }
+output "subnet_private_id" {
+    value = length(aws_subnet.private) > 1 ? aws_subnet.private.*.id : null
+}
+output "subnet_public_id" {
+    value = length(aws_subnet.private) > 1 ? aws_subnet.public.*.id : null
+}
 output "subnet_public" {
     value = length(aws_subnet.public) > 1 ? aws_subnet.public.*.cidr_block : null
 }

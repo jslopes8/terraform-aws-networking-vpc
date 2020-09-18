@@ -160,6 +160,9 @@ resource "aws_route_table" "private" {
         },
         var.default_tags
     )
+    lifecycle {
+        ignore_changes = [ "route" ]
+    }
 }
 resource "aws_route_table_association" "private" {
     count   = var.create ? length(var.subnet_private) : 0
