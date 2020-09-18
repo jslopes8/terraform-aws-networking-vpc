@@ -32,8 +32,8 @@ output "vpc_peering_id" {
     value = aws_vpc_peering_connection.main.0.id
 }
 output "rt_private_id" {
-    value = length(aws_route_table.private) > 1 : aws_route_table.private.*.id : null
+    value = length(aws_route_table.private) > 1 ? aws_route_table.private.*.id : null
 }
 output "rt_public_id" {
-    value = length(aws_route_table.public) > 1 : aws_route_table.public.*.id : null
+    value = length(aws_route_table.public) > 1 ? aws_route_table.public.*.id : null
 }
