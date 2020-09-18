@@ -29,7 +29,7 @@ output "subnet_db" {
     value = length(aws_db_subnet_group.database) > 1 ? aws_db_subnet_group.database.*.id : null
 } 
 output "vpc_peering_id" {
-    value = length(aws_vpc_peering_connection.main) > 1 ? aws_vpc_peering_connection.main.*.id : null
+    value = length(aws_vpc_peering_connection.main) > 0 ? aws_vpc_peering_connection.main.*.id : null
 }
 output "rt_private_id" {
     value = length(aws_route_table.private) > 1 ? aws_route_table.private.*.id : null
