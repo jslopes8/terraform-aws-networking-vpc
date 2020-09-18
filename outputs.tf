@@ -1,4 +1,4 @@
-output "vpc" {
+output "id" {
     value = data.aws_vpc.selected.id
 }
 output "subnet_private" {
