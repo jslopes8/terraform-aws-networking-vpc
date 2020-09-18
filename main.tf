@@ -454,9 +454,9 @@ resource "aws_vpc_peering_connection" "main" {
 	depends_on = [ aws_vpc.main ]
 
   	peer_vpc_id = aws_vpc.main.0.id
-  	vpc_id      = lookup(vpc_peering_connection[count.index], "accepter_vpc_id", null)
-  	peer_region = lookup(vpc_peering_connection[count.index], "accepter_vpc_region", null)
-    auto_accept = lookup(vpc_peering_connection[count.index], "auto_accept", null )
+  	vpc_id      = lookup(var.vpc_peering_connection[count.index], "accepter_vpc_id", null)
+  	peer_region = lookup(var.vpc_peering_connection[count.index], "accepter_vpc_region", null)
+    auto_accept = lookup(var.vpc_peering_connection[count.index], "auto_accept", null )
 
 	tags = var.default_tags
 }
@@ -464,7 +464,7 @@ resource "aws_route" "rt_peering" {
     count   = var.create ? length(var.vpc_peering_connection) : 0
 
     route_table_id            = aws_route_table.private.0.id
-    destination_cidr_block    = lookup(vpc_peering_connection[count.index], "destination_cidr_block", null)
+    destination_cidr_block    = lookup(var.vpc_peering_connection[count.index], "destination_cidr_block", null)
     vpc_peering_connection_id = aws_vpc_peering_connection.main.0.id
 
     depends_on                = [ aws_route_table.public, aws_vpc_peering_connection.main, aws_vpc.main ]
