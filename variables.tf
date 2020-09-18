@@ -77,4 +77,7 @@ variable "subnet_cache" {
     type = any
     default = []
 }
-
+variable "vpc_peering_connection" {
+    type = any
+    default = []
+}
