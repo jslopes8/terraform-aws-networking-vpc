@@ -161,7 +161,7 @@ resource "aws_route_table" "private" {
         var.default_tags
     )
     lifecycle {
-        ignore_changes = all
+        ignore_changes = [route]
     }
 }
 resource "aws_route_table_association" "private" {
