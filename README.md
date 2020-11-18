@@ -22,7 +22,7 @@ Existem muitas ferramentas disponiveis para auxiliar-lo a calcular blocos CIDR d
 
 ## Usage
 Exemplo de uso: Criando uma VPC básica.
-```bash
+```hcl
 module "vpc" {
   source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
 
@@ -33,7 +33,7 @@ module "vpc" {
 }
 ```
 Exemplo de uso: Criando uma VPC com uma subnet publica.
-```bash
+```hcl
 module "vpc" {
   source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
 
@@ -52,7 +52,7 @@ module "vpc" {
 }
 ```
 Exemplo de uso: Criando uma VPC com duas subnet publicas em duas AZs.
-```bash
+```hcl
 module "vpc" {
   source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.0"
 
@@ -62,15 +62,15 @@ module "vpc" {
   
   subnet_public = [
   	{
-		tag_name		= "vpc-pub-1a"
-		cidr_block 		= "10.0.0.0/19"
-		availability_zone 	= "us-east-1a"
+		tag_name				= "vpc-pub-1a"
+		cidr_block 				= "10.0.0.0/19"
+		availability_zone 		= "us-east-1a"
 		map_public_ip_on_launch	= "true"
 	},
   	{
-		tag_name		= "vpc-pub-1b"
-		cidr_block 		= "10.0.64.0/18"
-		availability_zone 	= "us-east-1b"
+		tag_name				= "vpc-pub-1b"
+		cidr_block 				= "10.0.64.0/18"
+		availability_zone 		= "us-east-1b"
 		map_public_ip_on_launch	= "true"
 	}
   ]
@@ -79,7 +79,7 @@ module "vpc" {
 
 Exemplo de uso: Criando uma VPC Completa com duas Subnet Publicas e duas subnet Privadas
 
-```bash
+```hcl
 module "create_vpc" {
   	source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
 
@@ -98,23 +98,25 @@ module "create_vpc" {
 			tag_name				= "${local.vpc_name}-pub-1a"
 			cidr_block 				= "10.0.0.0/18"
 			availability_zone 		= "us-east-1a"
+			map_public_ip_on_launch	= "true"
     	},
     	{
 			tag_name				= "${local.vpc_name}-pub-1b"
 			cidr_block 				= "10.0.64.0/18"
 			availability_zone 		= "us-east-1b"
+			map_public_ip_on_launch	= "true"
     	}
     ]
     subnet_private = [
         {
-			tag_name				= "${local.vpc_name}-priv-1a"
-			cidr_block 				= "10.0.128.0/18"
-			availability_zone 		= "us-east-1a"
+			tag_name			= "${local.vpc_name}-priv-1a"
+			cidr_block 			= "10.0.128.0/18"
+			availability_zone 	= "us-east-1a"
     	},
         {
-			tag_name				= "${local.vpc_name}-priv-1b"
-			cidr_block 				= "10.0.192.0/18"
-			availability_zone 		= "us-east-1b"
+			tag_name			= "${local.vpc_name}-priv-1b"
+			cidr_block 			= "10.0.192.0/18"
+			availability_zone 	= "us-east-1b"
     	}
   	]
 	
@@ -124,7 +126,7 @@ module "create_vpc" {
 
 Exemplo de uso: Criando uma VPC para Cluster EKS.
 
-```bash
+```hcl
 module "create_vpc" {
   	source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
 
@@ -138,6 +140,7 @@ module "create_vpc" {
 			tag_name				= "${local.vpc_name}-Pub-1a"
 			cidr_block 				= "10.0.0.0/18"
 			availability_zone 		= "us-east-1a"
+			map_public_ip_on_launch	= "true"
 			tag_public				= {
 				"kubernetes.io/role/elb"						= "1"
 				"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
@@ -147,7 +150,8 @@ module "create_vpc" {
 			tag_name				= "${local.vpc_name}-Pub-1b"
 			cidr_block 				= "10.0.64.0/18"
 			availability_zone 		= "us-east-1b"
-			tag_public				= {
+			map_public_ip_on_launch	= "true"
+			tag_public			= {
 				"kubernetes.io/role/elb"						= "1"
 				"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
 			}
@@ -157,19 +161,19 @@ module "create_vpc" {
 	## 
     subnet_private = [
         {
-			tag_name				= "${local.vpc_name}-Priv-1a"
-			cidr_block 				= "10.0.128.0/18"
-			availability_zone 		= "us-east-1a"
-			tag_private				= {
+			tag_name			= "${local.vpc_name}-Priv-1a"
+			cidr_block 			= "10.0.128.0/18"
+			availability_zone 	= "us-east-1a"
+			tag_private			= {
 				"kubernetes.io/role/internal-elb"				= "1"
 				"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
 			}
     	},
         {
-			tag_name				= "${local.vpc_name}-Priv-1b"
-			cidr_block 				= "10.0.192.0/18"
-			availability_zone 		= "us-east-1b"
-			tag_private				= {
+			tag_name			= "${local.vpc_name}-Priv-1b"
+			cidr_block 			= "10.0.192.0/18"
+			availability_zone 	= "us-east-1b"
+			tag_private			= {
 				"kubernetes.io/role/internal-elb"				= "1"
 				"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
 			}
