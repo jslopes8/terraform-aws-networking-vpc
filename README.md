@@ -1,4 +1,4 @@
-# AWS VPC Terraform module (em Construção)
+# AWS VPC Terraform module
 
 Terraform module irá provisionar os seguintes recursos:
 
