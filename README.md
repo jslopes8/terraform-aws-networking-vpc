@@ -62,15 +62,15 @@ module "vpc" {
   
   subnet_public = [
   	{
-		tag_name				= "vpc-pub-1a"
-		cidr_block 				= "10.0.0.0/19"
-		availability_zone 		= "us-east-1a"
+		tag_name		= "vpc-pub-1a"
+		cidr_block 		= "10.0.0.0/19"
+		availability_zone 	= "us-east-1a"
 		map_public_ip_on_launch	= "true"
 	},
   	{
-		tag_name				= "vpc-pub-1b"
-		cidr_block 				= "10.0.64.0/18"
-		availability_zone 		= "us-east-1b"
+		tag_name		= "vpc-pub-1b"
+		cidr_block 		= "10.0.64.0/18"
+		availability_zone 	= "us-east-1b"
 		map_public_ip_on_launch	= "true"
 	}
   ]
@@ -81,42 +81,42 @@ Exemplo de uso: Criando uma VPC Completa com duas Subnet Publicas e duas subnet 
 
 ```hcl
 module "create_vpc" {
-  	source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
+  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
 
-  	vpc_name    			= local.vpc_name
-	region 					= "us-east-1"
-  	cidr_block  			= "10.0.0.0/16"
-  	enable_dns_hostnames 	= "true"
-  	enable_dns_support   	= "true"
-	
-	dhcp_opts = [{
-			domain_name_servers = [ "AmazonProvidedDNS" ]
-	}]
-    enable_nat_gateway = "true"
-  	subnet_public = [
-    	{
-			tag_name				= "${local.vpc_name}-pub-1a"
-			cidr_block 				= "10.0.0.0/18"
-			availability_zone 		= "us-east-1a"
-			map_public_ip_on_launch	= "true"
+  vpc_name    		= local.vpc_name
+  region 			= "us-east-1"
+  cidr_block  		= "10.0.0.0/16"
+  enable_dns_hostnames 	= "true"
+  enable_dns_support   	= "true"
+  
+  dhcp_opts = [{
+	domain_name_servers = [ "AmazonProvidedDNS" ]
+   }]
+   enable_nat_gateway = "true"
+   subnet_public = [
+   	{
+		tag_name		= "${local.vpc_name}-pub-1a"
+		cidr_block 		= "10.0.0.0/18"
+		availability_zone 	= "us-east-1a"
+		map_public_ip_on_launch	= "true"
     	},
     	{
-			tag_name				= "${local.vpc_name}-pub-1b"
-			cidr_block 				= "10.0.64.0/18"
-			availability_zone 		= "us-east-1b"
-			map_public_ip_on_launch	= "true"
+		tag_name		= "${local.vpc_name}-pub-1b"
+		cidr_block 		= "10.0.64.0/18"
+		availability_zone 	= "us-east-1b"
+		map_public_ip_on_launch	= "true"
     	}
     ]
     subnet_private = [
         {
-			tag_name			= "${local.vpc_name}-priv-1a"
-			cidr_block 			= "10.0.128.0/18"
-			availability_zone 	= "us-east-1a"
+		tag_name		= "${local.vpc_name}-priv-1a"
+		cidr_block 		= "10.0.128.0/18"
+		availability_zone 	= "us-east-1a"
     	},
         {
-			tag_name			= "${local.vpc_name}-priv-1b"
-			cidr_block 			= "10.0.192.0/18"
-			availability_zone 	= "us-east-1b"
+		tag_name		= "${local.vpc_name}-priv-1b"
+		cidr_block 		= "10.0.192.0/18"
+		availability_zone 	= "us-east-1b"
     	}
   	]
 	
@@ -128,59 +128,58 @@ Exemplo de uso: Criando uma VPC para Cluster EKS.
 
 ```hcl
 module "create_vpc" {
-  	source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
+  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
 
-  	vpc_name    			= local.vpc_name
-
---- omitido trechos ---
-
-    enable_nat_gateway = "true"
-  	subnet_public = [
-    	{
-			tag_name				= "${local.vpc_name}-Pub-1a"
-			cidr_block 				= "10.0.0.0/18"
-			availability_zone 		= "us-east-1a"
-			map_public_ip_on_launch	= "true"
-			tag_public				= {
-				"kubernetes.io/role/elb"						= "1"
-				"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
-			}
+  vpc_name    			= local.vpc_name
+  
+  --- omitido trechos ---
+  
+  enable_nat_gateway = "true"
+  subnet_public = [
+  	{
+		tag_name		= "${local.vpc_name}-Pub-1a"
+		cidr_block 		= "10.0.0.0/18"
+		availability_zone 	= "us-east-1a"
+		map_public_ip_on_launch	= "true"
+		tag_public		= {
+			"kubernetes.io/role/elb"			= "1"
+			"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
+		}
     	},
     	{
-			tag_name				= "${local.vpc_name}-Pub-1b"
-			cidr_block 				= "10.0.64.0/18"
-			availability_zone 		= "us-east-1b"
-			map_public_ip_on_launch	= "true"
-			tag_public			= {
-				"kubernetes.io/role/elb"						= "1"
-				"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
-			}
+		tag_name		= "${local.vpc_name}-Pub-1b"
+		cidr_block 		= "10.0.64.0/18"
+		availability_zone 	= "us-east-1b"
+		map_public_ip_on_launch	= "true"
+		tag_public		= {
+			"kubernetes.io/role/elb"			= "1"
+			"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
+		}
     	}
     ]
-
-	## 
+     
     subnet_private = [
         {
-			tag_name			= "${local.vpc_name}-Priv-1a"
-			cidr_block 			= "10.0.128.0/18"
-			availability_zone 	= "us-east-1a"
-			tag_private			= {
-				"kubernetes.io/role/internal-elb"				= "1"
-				"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
-			}
+		tag_name		= "${local.vpc_name}-Priv-1a"
+		cidr_block 		= "10.0.128.0/18"
+		availability_zone 	= "us-east-1a"
+		tag_private		= {
+			"kubernetes.io/role/internal-elb"		= "1"
+			"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
+		}
     	},
         {
-			tag_name			= "${local.vpc_name}-Priv-1b"
-			cidr_block 			= "10.0.192.0/18"
-			availability_zone 	= "us-east-1b"
-			tag_private			= {
-				"kubernetes.io/role/internal-elb"				= "1"
-				"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
-			}
+		tag_name		= "${local.vpc_name}-Priv-1b"
+		cidr_block 		= "10.0.192.0/18"
+		availability_zone 	= "us-east-1b"
+		tag_private		= {
+			"kubernetes.io/role/internal-elb"		= "1"
+			"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
+		}
     	}
-  	]
-
---- omitido trechos ---
+  ]
+  
+  --- omitido trechos ---
 
 ```
 
