@@ -22,20 +22,20 @@ Existem muitas ferramentas disponiveis para auxiliar-lo a calcular blocos CIDR d
 
 ## Usage
 Exemplo de uso: Criando uma VPC básica.
-```hcl
+```bash
 module "vpc" {
-  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.0"
+  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
 
-  vpc_name	= "vpc-test"
-  region 	= "us-east-1"
-  cidr_block  	= "10.0.0.0/16"
+  vpc_name		= "vpc-test"
+  region 		= "us-east-1"
+  cidr_block	= "10.0.0.0/16"
 	
 }
 ```
 Exemplo de uso: Criando uma VPC com uma subnet publica.
-```hcl
+```bash
 module "vpc" {
-  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.0"
+  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
 
   vpc_name    	= "vpc-test"
   region 	= "us-east-1"
@@ -51,8 +51,8 @@ module "vpc" {
   ]
 }
 ```
-Exemplo de uso: Criando uma VPC com subnet em duas AZs.
-```hcl
+Exemplo de uso: Criando uma VPC com duas subnet publicas em duas AZs.
+```bash
 module "vpc" {
   source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.0"
 
@@ -76,6 +76,111 @@ module "vpc" {
   ]
 }
 ```
+
+Exemplo de uso: Criando uma VPC Completa com duas Subnet Publicas e duas subnet Privadas
+
+```bash
+module "create_vpc" {
+  	source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
+
+  	vpc_name    			= local.vpc_name
+	region 					= "us-east-1"
+  	cidr_block  			= "10.0.0.0/16"
+  	enable_dns_hostnames 	= "true"
+  	enable_dns_support   	= "true"
+	
+	dhcp_opts = [{
+			domain_name_servers = [ "AmazonProvidedDNS" ]
+	}]
+    enable_nat_gateway = "true"
+  	subnet_public = [
+    	{
+			tag_name				= "${local.vpc_name}-pub-1a"
+			cidr_block 				= "10.0.0.0/18"
+			availability_zone 		= "us-east-1a"
+    	},
+    	{
+			tag_name				= "${local.vpc_name}-pub-1b"
+			cidr_block 				= "10.0.64.0/18"
+			availability_zone 		= "us-east-1b"
+    	}
+    ]
+    subnet_private = [
+        {
+			tag_name				= "${local.vpc_name}-priv-1a"
+			cidr_block 				= "10.0.128.0/18"
+			availability_zone 		= "us-east-1a"
+    	},
+        {
+			tag_name				= "${local.vpc_name}-priv-1b"
+			cidr_block 				= "10.0.192.0/18"
+			availability_zone 		= "us-east-1b"
+    	}
+  	]
+	
+    default_tags = local.default_tags
+}
+```
+
+Exemplo de uso: Criando uma VPC para Cluster EKS.
+
+```bash
+module "create_vpc" {
+  	source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
+
+  	vpc_name    			= local.vpc_name
+
+--- omitido trechos ---
+
+    enable_nat_gateway = "true"
+  	subnet_public = [
+    	{
+			tag_name				= "${local.vpc_name}-Pub-1a"
+			cidr_block 				= "10.0.0.0/18"
+			availability_zone 		= "us-east-1a"
+			tag_public				= {
+				"kubernetes.io/role/elb"						= "1"
+				"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
+			}
+    	},
+    	{
+			tag_name				= "${local.vpc_name}-Pub-1b"
+			cidr_block 				= "10.0.64.0/18"
+			availability_zone 		= "us-east-1b"
+			tag_public				= {
+				"kubernetes.io/role/elb"						= "1"
+				"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
+			}
+    	}
+    ]
+
+	## 
+    subnet_private = [
+        {
+			tag_name				= "${local.vpc_name}-Priv-1a"
+			cidr_block 				= "10.0.128.0/18"
+			availability_zone 		= "us-east-1a"
+			tag_private				= {
+				"kubernetes.io/role/internal-elb"				= "1"
+				"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
+			}
+    	},
+        {
+			tag_name				= "${local.vpc_name}-Priv-1b"
+			cidr_block 				= "10.0.192.0/18"
+			availability_zone 		= "us-east-1b"
+			tag_private				= {
+				"kubernetes.io/role/internal-elb"				= "1"
+				"kubernetes.io/cluster/${local.cluster_name}" 	= "shared"
+			}
+    	}
+  	]
+
+--- omitido trechos ---
+
+```
+
+
 ## Requirements
 | Name | Version |
 | ---- | ------- |
@@ -88,6 +193,8 @@ module "vpc" {
 | ---- | ----------- | -------- | ---- | ------- |
 | vpc_name | O nome da sua VPC | `yes` | `string` | ` ` |
 | region | Escolha qual região está criando a sua VPC | `no` | `string` | `us-east-1` |
+| enable_dns_hostnames |
+| enable_dns_support |
 
 ## Variable Outputs
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
