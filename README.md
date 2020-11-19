@@ -76,6 +76,37 @@ module "vpc" {
   ]
 }
 ```
+Exemplo de uso: Criando uma VPC com três subnet publicas em duas AZs.
+```hcl
+module "vpc" {
+  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.0"
+
+  vpc_name    	= "vpc-test"
+  region 	= "us-east-1"
+  cidr_block  	= "10.0.0.0/16"
+  
+  subnet_public = [
+  	{
+		tag_name		= "vpc-pub-1a"
+		cidr_block 		= "10.0.0.0/19"
+		availability_zone 	= "us-east-1a"
+		map_public_ip_on_launch	= "true"
+	},
+  	{
+		tag_name		= "vpc-pub-1b"
+		cidr_block 		= "10.0.64.0/18"
+		availability_zone 	= "us-east-1b"
+		map_public_ip_on_launch	= "true"
+	},
+  	{
+		tag_name		= "vpc-pub-1c"
+		cidr_block 		= "10.0.128.0/18"
+		availability_zone 	= "us-east-1c"
+		map_public_ip_on_launch	= "true"
+	}
+  ]
+}
+```
 
 Exemplo de uso: Criando uma VPC Completa com duas Subnet Publicas e duas subnet Privadas
 
