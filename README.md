@@ -24,7 +24,7 @@ Existem muitas ferramentas disponiveis para auxiliar-lo a calcular blocos CIDR d
 Exemplo de uso: Criando uma VPC básica.
 ```hcl
 module "vpc" {
-  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
+  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.4"
 
   vpc_name		= "vpc-test"
   region 		= "us-east-1"
@@ -35,7 +35,7 @@ module "vpc" {
 Exemplo de uso: Criando uma VPC com uma subnet publica.
 ```hcl
 module "vpc" {
-  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
+  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.4"
 
   vpc_name    	= "vpc-test"
   region 	= "us-east-1"
@@ -112,7 +112,7 @@ Exemplo de uso: Criando uma VPC Completa com duas Subnet Publicas e duas subnet 
 
 ```hcl
 module "create_vpc" {
-  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
+  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.4"
 
   vpc_name    		= local.vpc_name
   region 			= "us-east-1"
@@ -159,7 +159,7 @@ Exemplo de uso: Criando uma VPC para Cluster EKS.
 
 ```hcl
 module "create_vpc" {
-  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.3"
+  source = "git@github.com:jslopes8/terraform-aws-vpc.git?ref=v2.4"
 
   vpc_name    			= local.vpc_name
   
