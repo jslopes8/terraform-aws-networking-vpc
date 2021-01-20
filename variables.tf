@@ -81,3 +81,7 @@ variable "vpc_peering_connection" {
     type = any
     default = []
 }
+variable "vpn_customer_gateway" {
+    type = any
+    default = []
+}
