@@ -3,7 +3,7 @@
 resource "aws_vpc_endpoint" "main" {
     count   = var.create ? length(var.vpc_endpoint) : 0
 
-    epends_on = [ aws_vpc.main ]
+    depends_on = [ aws_vpc.main ]
 
     vpc_id       = aws_vpc.main.0.id
     service_name        = lookup(var.vpc_endpoint[count.index], "service_name", null)
