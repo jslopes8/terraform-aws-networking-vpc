@@ -85,3 +85,7 @@ variable "vpn_customer_gateway" {
     type = any
     default = []
 }
+variable "vpc_endpoint" {
+    type = any
+    default = []
+}
