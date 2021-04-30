@@ -20,10 +20,10 @@ output "subnet_database" {
     value = length(aws_subnet.database) > 1 ? aws_subnet.public.*.cidr_block : null
 }
 output "internet_gateway" {
-    value = length(aws_internet_gateway.main) > 1 ? aws_internet_gateway.main.0.id : null 
+    value = length(aws_internet_gateway.main) > 0 ? aws_internet_gateway.main.0.id : null 
 }
 output "elastic_ip" {
-    value = length(aws_eip.public) > 1 ? aws_eip.public.0.public_ip : null
+    value = length(aws_eip.public) > 1 ? aws_eip.public.*.public_ip : null
 }
 output "elastic_ip_database" {
     value = length(aws_eip.database) > 1 ? aws_eip.database.0.public_ip : null
@@ -36,6 +36,9 @@ output "nat_gateway_private_ip" {
 }
 output "nat_gateway_id" {
     value = length(aws_nat_gateway.public) > 1 ? aws_nat_gateway.public.*.id : null
+}
+output "nat_gateway_sn" {
+    value = length(aws_nat_gateway.public) > 1 ? aws_nat_gateway.public.*.subnet_id : null
 }
 output "subnet_db" {
     value = length(aws_db_subnet_group.database) > 1 ? aws_db_subnet_group.database.*.id : null
